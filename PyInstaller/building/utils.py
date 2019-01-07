@@ -8,7 +8,6 @@
 #-----------------------------------------------------------------------------
 
 
-
 #--- functions for checking guts ---
 # NOTE: By GUTS it is meant intermediate files and data structures that
 # PyInstaller creates for bundling files and creating final executable.
@@ -82,8 +81,8 @@ def _check_guts_toc(attr, old, toc, last_build, pyc=0):
 
     Use this for input parameters.
     """
-    return (_check_guts_eq(attr, old, toc, last_build)
-            or _check_guts_toc_mtime(attr, old, toc, last_build, pyc=pyc))
+    return (_check_guts_eq(attr, old, toc, last_build) or
+            _check_guts_toc_mtime(attr, old, toc, last_build, pyc=pyc))
 
 
 #---
@@ -128,6 +127,7 @@ def add_suffix_to_extensions(toc):
         new_toc.append((inm, fnm, typ))
     return new_toc
 
+
 def applyRedirects(manifest, redirects):
     """
     Apply the binding redirects specified by 'redirects' to the dependent assemblies
@@ -150,6 +150,7 @@ def applyRedirects(manifest, redirects):
                 redirecting = True
     return redirecting
 
+
 def checkCache(fnm, strip=False, upx=False, dist_nm=None):
     """
     Cache prevents preprocessing binary files again and again.
@@ -170,6 +171,12 @@ def checkCache(fnm, strip=False, upx=False, dist_nm=None):
         # A file embedded in another pyinstaller build via multipackage
         # No actual file exists to process
         return fnm
+
+    bad_dlls = ['vcruntime140.dll', 'msvcp140.dll', 'qwindows.dll', 'qwindowsvistastyle.dll']
+
+    for item in bad_dlls:
+        if item in os.path.basename(fnm).lower():
+            return fnm
 
     if strip:
         strip = True
