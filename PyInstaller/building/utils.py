@@ -172,21 +172,13 @@ def checkCache(fnm, strip=False, upx=False, dist_nm=None):
         # No actual file exists to process
         return fnm
 
+    strip = bool(strip)
+
     bad_dlls = ['vcruntime140.dll', 'msvcp140.dll', 'qwindows.dll', 'qwindowsvistastyle.dll']
 
-    for item in bad_dlls:
-        if item in os.path.basename(fnm).lower():
-            return fnm
-
-    if strip:
-        strip = True
-    else:
-        strip = False
-    if upx:
-        upx = True
-    else:
+    if os.path.normcase(os.path.basename(fnm)) in bad_dlls:
         upx = False
-
+           
     # Load cache index
     # Make cachedir per Python major/minor version.
     # This allows parallel building of executables with different
